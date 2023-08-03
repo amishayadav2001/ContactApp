@@ -1,80 +1,107 @@
 const ContactInfo = require("./ContactInfo")
+const NotFound = require("./NotFound")
+const ValidationError = require("./ValidationError")
 
-class Contact{
-    static ID =0
-    constructor(contactName, country){
+
+class Contact {
+    static ID = 0
+    constructor(contactName, country) {
         this.ID = Contact.ID++
         this.contactName = contactName
         this.country = country
-        this.contactInfos = []
+        this.contactInfo = []
     }
-    
-    updateContact( parameter, newValue){
-    // if (typeof contactID!= 'number'){ return "Invalid contactID"}
-    // let [indexOfContact, isContactExist] = this.findContact(contactID)
-    // if (!isContactExist) { return "Contact Does not Exist"}
-    // return this.contacts[indexOfContact].updateContact(parameter, newValue)
-    switch(parameter){
-        case "contactName":
-            if (typeof newValue !== "string") {
-                return "Invalid new contactname"}
-                this.contactName = newValue
-                return this  
-        case "country":
-            if (typeof newValue !== "string") {
-                return "Invalid country name"}
-                this.country = newValue
-                return this
-            
-        default: return "Invalid parameter"
-    }
-}
 
-createContactInfo(typeOfContactInfo, valueOfContactInfo){
-    let contactInfoObj = new contactInfo(typeOfContactInfo, valueOfContactInfo)
-    this.contactsInfos.push(contactInfoObj)
-    return contactInfoObj 
-}
+    updateContact(parameter, newValue) {
+        try {
+            switch (parameter) {
+                case "contactName":
+                    if (typeof newValue != "string") {
+                        return "Invalid new contactname"
+                    }
+                    this.contactName = newValue
+                    return this
+                case "country":
+                    if (typeof newValue != "string") {
+                        return "Invalid country name"
+                    }
+                    this.country = newValue
+                    return this
 
-getContactInfo(){
-    return this.contactInfos
-}
-findContactInfo(contactID){
-    for (let index = 0; index < this.contactInfos.length; index++){
-        if(this.contactInfos[index].ID == contactID) {
-            return [index, true]
+                default: return "Invalid parameter"
+            }
+
+        } catch (error) {
+            throw error
         }
     }
-    return[-1,false]
-}
-updateContactInfos(contactID,parameter,newValue){
-    if(this.Admin){ 
-        return "Does not have access"}
-    if(typeof contactID != 'number'){
-        return "contactID should be number"
+
+    createContactInfo(typeOfContactInfo, valueOfContactInfo) {
+        let contactInfoCreated = new contactInfo(typeOfContactInfo, valueOfContactInfo)
+        this.contactsInfo.push(contactInfoCreated)
+        return contactInfoCreated
     }
-    let[indexOfContact,isContactInfoExist] = this.findContactInfo(contactID)
-    if(!isContactInfoExist){
-        return "Contact does not exist"
+
+    getContactInfo() {
+        return this.contactInfo
     }
-    return this.contactInfos[indexOfContact].updateContactInfo(parameter,newValue)
-}
-deleteContactInfo(contactID){
-    
-    let[indexOfContact, isContactExist] = this.findContactInfo(contactID)
-    if(!isContactExist){
-        return "Contact does not exist"
+    findContactInfo(contactInfoID) {
+        try {
+            for (let index = 0; index < this.contactInfo.length; index++) {
+                if (this.contactInfo[index].ID == contactInfoID) {
+                    return index
+                }
+            }
+            throw new NotFound("contact info ID not found")
+
+        } catch (error) {
+            throw error
+        }
     }
-    this.contactInfos.splice(indexOfContact,1)
-    return Contact.contactInfos
-}
-getContactInfoById(ID){
-    let [indexOfUser, isContactInfoExist] = this.findContactInfo(ID)
-    if(!isContactInfoExist){
-        return "Contact does not exist"
+    updateContactInfo(contactInfoID, parameter, newValue) {
+        try {
+            if (typeof contactInfoID != 'number') {
+                throw new ValidationError("contactInfoID should be number")
+            }
+            let indexOfContactInfo = this.findContactInfo(contactInfoID)
+            return this.contactInfo[indexOfContactInfo].updateContactInfo(parameter, newValue)
+
+        } catch (error) {
+            throw error
+        }
+
     }
-    return this.contactInfos[indexOfUser]
-}
+
+
+    deleteContactInfo(contactInfoID) {
+        try {
+            if (typeof contactInfoID != 'number') {
+                throw new ValidationError("contactInfoID should be number")
+            }
+
+            let indexOfContactInfo = this.findContactInfo(contactInfoID)
+
+            this.contactInfo.splice(indexOfContactInfo, 1)
+            return this.contactInfo
+
+        } catch (error) {
+            throw error
+        }
+    }
+    getContactInfoById(contactInfoID) {
+        try{
+            if (typeof contactInfoID != 'number') {
+                throw new ValidationError("contactInfoID should be number")
+            }
+            let indexOfContactInfo = this.findContactInfo(contactInfoID)
+           
+            return this.contactInfo[indexOfContactInfo]
+
+        }catch(error){
+            throw error
+        }
+        
+    }
 }
 
 module.exports = Contact
