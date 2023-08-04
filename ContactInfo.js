@@ -1,3 +1,5 @@
+const ValidationError = require("./Error/ValidationError")
+
 class ContactInfo {
   static ID = 0
   constructor(typeOfContactInfo, valueOfContactInfo) {
@@ -11,13 +13,13 @@ class ContactInfo {
       switch (parameter) {
         case "typeOfContactInfo":
           if (typeof newValue != 'string') {
-            return "typeOfContactInfo should be string" //if typeOfContactInfo is name
+            throw new ValidationError ("typeOfContactInfo should be string") 
           }
           this.typeOfContactInfo = newValue
           return this;
         case "valueOfContactInfo":
           if (typeof newValue != 'number') {
-            return "valueOfContactInfo should be number" //if valueOfContactInfo is phone number
+            throw new ValidationError ("valueOfContactInfo should be number") 
           }
           this.valueOfContactInfo = newValue
           return this;
@@ -26,7 +28,7 @@ class ContactInfo {
       }
 
     } catch (error) {
-      throw error
+      console.log(error);
     }
 
   }

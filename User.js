@@ -1,7 +1,7 @@
 const Contact = require("./Contact")
-const UnAuthorizedError = require("./UnAuthorizedError")
-const NotFound = require("./NotFound")
-const ValidationError = require("./ValidationError")
+const NotFoundError = require("./Error/NotFoundError")
+const UnAuthorizedError = require("./Error/UnAuthorizedError")
+const ValidationError = require("./Error/ValidationError")
 
 class User {
   static allUsers = []
@@ -25,7 +25,8 @@ class User {
       return userObj
     }
     catch (error) {
-      throw error
+      console.log(error);
+       
     }
   }
 
@@ -36,7 +37,7 @@ class User {
       if (typeof age != 'number') { throw new ValidationError("age should be number") }
       return new User(fullName, true, gender, age)
     } catch (error) {
-      throw error
+      console.log(error);
     }
 
   }
@@ -47,18 +48,19 @@ class User {
       return User.allUsers
     }
     catch (error) {
-      throw error
+      console.log(error);
+      
     }
   }
 
-  static findUser(ID) {
+  static findUser(userID) {
     try {
       for (let index = 0; index < User.allUsers.length; index++) {
         if (userID == User.allUsers[index].ID) {
           return index
         }
       }
-      throw new NotFound("user ID not found")
+      throw new NotFoundError("user ID not found")
     } catch (error) {
       throw error
     }
@@ -91,7 +93,8 @@ class User {
         default: return "Invalid parameter"
       }
     } catch (error) {
-      throw error
+      console.log(error);
+      
     }
   }
 
@@ -103,7 +106,8 @@ class User {
       User.allUsers.splice(indexOfUser, 1);
       return User.allUsers
     } catch (error) {
-      throw error
+      console.log(error);
+      
     }
   }
 
@@ -115,7 +119,7 @@ class User {
       this.contacts.push(createdContact)
       return createdContact
     } catch (error) {
-      throw error
+      console.log(error); 
     }
   }
 
@@ -124,7 +128,8 @@ class User {
       if (this.isAdmin) { throw new UnAuthorizedError("Admin does not have contacts") }
       return this.contacts
     } catch (error) {
-      throw error
+      console.log(error);
+      
     }
   }
 
@@ -134,7 +139,7 @@ class User {
         if (this.contacts[index].ID == contactID) {
           return index
         }
-      } throw new NotFound("contact ID not found")
+      } throw new NotFoundError("contact ID not found")
 
     } catch (error) {
       throw error
@@ -143,13 +148,13 @@ class User {
 
   updateContact(contactID, parameter, newValue) {
     try {
-      if (this.isAdmin) { throw new UnAuthorizedError("Doest not have access") }
+      if (this.isAdmin) { throw new UnAuthorizedError("Does not have access") }
       if (typeof contactID != 'number') { throw new ValidationError("contactID should be number") }
       let indexOfContact = this.findContact(contactID)
       return this.contacts[indexOfContact].updateContact(parameter, newValue)
 
     } catch (error) {
-      throw error
+      console.log(error); 
     }
 
   }
@@ -165,7 +170,7 @@ class User {
       return "User.contacts"
 
     } catch (error) {
-      throw error
+      console.log(error);
     }
 
   }
@@ -184,7 +189,7 @@ class User {
       return this.contacts[indexOfContact].createContactInfo(typeOfContactInfo, valueOfContactInfo)
 
     } catch (error) {
-      throw error
+      console.log(error);
     }
 
   }
@@ -196,7 +201,7 @@ class User {
       let indexOfContact = this.findContact(contactID)
       return this.contacts[indexOfContact].getContactInfo()
     } catch (error) {
-      throw error
+      console.log(error);
     }
   }
 
@@ -208,7 +213,7 @@ class User {
       return this.contacts[indexOfContact].updateContactInfo(contactInfoID, parameter, newValue)
 
     } catch (error) {
-      throw error
+      console.log(error);
     }
   }
 
@@ -224,7 +229,7 @@ class User {
       return this.contacts[indexOfContact].deleteContactInfo(contactInfoID)
 
     } catch (error) {
-      throw error
+      console.log(error);
     }
   }
 
@@ -241,7 +246,7 @@ class User {
       return User.allUsers[indexOfUser]
 
     } catch (error) {
-      throw error
+      console.log(error);
     }
   }
 
@@ -257,7 +262,7 @@ class User {
       return this.contacts[indexOfContact]
 
     } catch (error) {
-      throw error
+      console.log(error);
     }
   }
 
@@ -272,82 +277,62 @@ class User {
       let indexOfContact = this.findContact(contactID)
       return this.contacts[indexOfContact].getContactInfoById(contactInfoID)
     } catch (error) {
-      throw error
+      console.log(error);
     }
   }
 }
 
-let admin = User.newAdmin("Amisha", "Female", 21)
-let user1 = admin.newUser("Akash", "Male", 25)
-let user2 = user1.newUser("Suraj", "Male", 27)
+
+let admin = User.newAdmin("Amisha Yadav", "Female", 21)
 console.log(admin);
+
+let user1 = admin.newUser("Akash Yadav","Male",25)
 console.log(user1);
+let user2 = admin.newUser("Shiv Yadav", "Male",50)
 console.log(user2);
+let user3 = admin.newUser("Shanti Yadav", "Female",40)
+console.log(user3);
 
-console.log(admin.findUser("Amisha"));
-let user3 = admin.newUser("Nikhil", "Male", 21)
+console.log("read user before updation: ");
+console.log(admin.getAllUsers());
 
-user1.createContact("Amisha", "IND")
-user1.createContact("Mummy","IND")
+let updateuser3 = admin.updateUser(3, "fullName", "Nikhil Mishra")
+console.log("read user after updation:");
+console.log(admin.getAllUsers());
 
-user1.createContact("Amisha", "IND")
+// let deleteuser3 = admin.deleteUser(3)
+// console.log("read user after deletion:");
+// console.log(admin.getAllUsers());
+
+console.log("Create Contact:");
+user1.createContact("Amisha Yadav", "India")
+user1.createContact("Akash Yadav", "Australia")
+user1.createContact("Suraj Dubey", "Japan")
+
 console.log(user1.getAllContact());
 
-user1.createContactInfo(0, "mobile", 8369033866)
-user1.createContactInfo(0, "name", "Amisha" )
+console.log(user1.updateContact(2, "fullName", "Amisha")); 
+console.log(user1.updateContact(2, "country", "USA")); 
+
+console.log(user1.deleteContact(1));
 console.log(user1.getAllContact());
-console.log(user1.getAllContactInfo(0));
+
+// console.log(user1.createContactInfo(0, "Amisha Yadav", 8652809708));
+// console.log(user1.createContactInfo(2, "Akash Yadav", 8369033866));
+
+//console.log(user1.getAllContactInfo(0));
+
+//console.log(user1.updateContactInfo(0,0,"typeOfContact","name"));
+//console.log(user1.deleteContactInfo(0, 0));
+
+//console.log(user1.getAllContactInfo(0));
+
+console.log("Get user by ID:");
 console.log(admin.getUserById(1));
+
+console.log("Get contact by ID:");
 console.log(user1.getContactById(0));
-console.log(user1.getContactInfoById(0,0));
-console.log(user1.getAllContactInfo(0));
-console.log("-------------------------");
-console.log(user1.updateContactInfo(0, 0, 9221211972));
-console.log(user1.getAllContactInfo(0));
-user1.updateContact(0, "Yadav")
-user1.deleteContact(2)
 
-console.log(admin.getAllUsers());
-console.log(user1.getAllContact());
-
-admin.updateUser(2, "fullName", "Amisha Yadav")
-console.log(admin.getAllUsers());
-
-user1.updateContact(0, "Akash")
-console.log(user1.getAllContact());
-
-// let admin = User.newAdmin("Amisha Yadav", "Female", 21)
-// console.log(admin)
-
-// let user1 = admin.newUser("Suraj Dubey", "Male", 27)
-// let user2 = admin.newUser("Akash Yadav", "Male", 25)
-// let user3 = admin.newUser("Nikhil Mishra", "Male", 21)
-
-// console.log(user1)
-// console.log(user2)
-// console.log(user3)
-
-// console.log(user1.createContact("Amisha Yadav", "Japan"))
-// console.log(user1.createContact("Suraj Dubey", "India"))
-// console.log(user1.createContactInfo("Amisha Yadav", 8369033866))
-
-// console.log(user1.getContactInfo(1))
-// console.log(user1.updateContactInfo(0, "fullName", "Amisha Yadav"))
-// console.log(user1.contacts[0].contactInfos)
-
-// console.log(admin.getAllUsers())
-
-// console.log(admin.getUserById(1))
-// console.log(user1.getContactById(0))
-// console.log(user1.getContactInfoById(1))
-
-// console.log(admin.findContact(1));
-// console.log(admin.getAllUsers(1));
-// console.log(admin.deleteUser(0));
-// console.log(user1.getAllUsers(2));
-
-// // let contact1 = user1.createContact("Amisha Yadav");
-// // console.log(user1.getContactByID(1));
-
+//console.log(user1.getContactInfoById(0, 0));
 
 module.exports = User

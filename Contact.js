@@ -1,6 +1,6 @@
 const ContactInfo = require("./ContactInfo")
-const NotFound = require("./NotFound")
-const ValidationError = require("./ValidationError")
+const NotFoundError = require("./Error/NotFoundError")
+const ValidationError = require("./Error/ValidationError")
 
 
 class Contact {
@@ -17,13 +17,13 @@ class Contact {
             switch (parameter) {
                 case "contactName":
                     if (typeof newValue != "string") {
-                        return "Invalid new contactname"
+                        throw new ValidationError ("Invalid new contactname")
                     }
                     this.contactName = newValue
                     return this
                 case "country":
                     if (typeof newValue != "string") {
-                        return "Invalid country name"
+                        throw new ValidationError ("Invalid country name")
                     }
                     this.country = newValue
                     return this
@@ -32,7 +32,7 @@ class Contact {
             }
 
         } catch (error) {
-            throw error
+            console.log(error);
         }
     }
 
@@ -52,7 +52,7 @@ class Contact {
                     return index
                 }
             }
-            throw new NotFound("contact info ID not found")
+            throw new NotFoundError("contact info ID not found")
 
         } catch (error) {
             throw error
@@ -67,7 +67,7 @@ class Contact {
             return this.contactInfo[indexOfContactInfo].updateContactInfo(parameter, newValue)
 
         } catch (error) {
-            throw error
+            console.log(error);
         }
 
     }
@@ -85,7 +85,7 @@ class Contact {
             return this.contactInfo
 
         } catch (error) {
-            throw error
+            console.log(error);
         }
     }
     getContactInfoById(contactInfoID) {
@@ -98,7 +98,7 @@ class Contact {
             return this.contactInfo[indexOfContactInfo]
 
         }catch(error){
-            throw error
+            console.log(error);
         }
         
     }
